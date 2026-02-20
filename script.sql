@@ -78,7 +78,7 @@ CREATE TABLE Perfil(
 CREATE TABLE Conteudo(
     id NUMBER,
     tipo VARCHAR2(100) NOT NULL,
-    duracao_minutos NUMBER NOT NULL,
+    duracao_minutos NUMBER,
     classificacao_indicativa NUMBER,
     ano_lancamento NUMBER(4) NOT NULL,
     sinopse CLOB,
@@ -101,13 +101,16 @@ CREATE TABLE Avaliacao(
     REFERENCES Conteudo(id),
 
     CONSTRAINT ck_avaliacao_nota
-    CHECK (nota BETWEEN 0 AND 10)
+    CHECK (nota BETWEEN 0 AND 10),
+
+    CONSTRAINT uk_avaliacao_perfil_conteudo UNIQUE (perfil_id, conteudo_id)
 );
 
 CREATE TABLE Genero(
     id NUMBER,
     nome VARCHAR2(100) NOT NULL,
-    CONSTRAINT pk_genero PRIMARY KEY (id)
+    CONSTRAINT pk_genero PRIMARY KEY (id),
+    CONSTRAINT uk_genero_nome UNIQUE (nome)
 );
 
 CREATE TABLE Artista(
@@ -128,7 +131,9 @@ CREATE TABLE Temporada(
     CONSTRAINT pk_temporada PRIMARY KEY (id),
     
     CONSTRAINT fk_temporada_conteudo FOREIGN KEY(conteudo_id)
-    REFERENCES  Conteudo(id)
+    REFERENCES  Conteudo(id),
+    
+    CONSTRAINT uk_temporada_numero UNIQUE (conteudo_id, numero)
 );
 
 CREATE TABLE Episodio(
@@ -139,9 +144,11 @@ CREATE TABLE Episodio(
     duracao_minutos NUMBER NOT NULL,
     temporada_id NUMBER NOT NULL,
     CONSTRAINT pk_episodio PRIMARY KEY (id),
-    
+
     CONSTRAINT fk_episodio_temporada FOREIGN KEY(temporada_id)
-    REFERENCES Temporada(id)
+    REFERENCES Temporada(id),
+    
+    CONSTRAINT uk_episodio_numero UNIQUE (temporada_id, numero)
 );
 
    CREATE TABLE Historico(
@@ -195,4 +202,3 @@ CREATE TABLE Artista_Conteudo(
     CONSTRAINT fk_ac_artista FOREIGN KEY(artista_id)
     REFERENCES Artista(id)
 );
-
