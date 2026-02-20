@@ -44,7 +44,9 @@ CREATE TABLE Assinatura (
     CONSTRAINT pk_assinatura PRIMARY KEY (id),
 
     CONSTRAINT ck_assinatura_preco
-    CHECK (preco_mensal > 0)
+    CHECK (preco_mensal > 0),
+
+    CONSTRAINT ck_assinatura_telas CHECK (max_telas > 0)
 );
 
 CREATE TABLE Usuario(
@@ -133,7 +135,9 @@ CREATE TABLE Temporada(
     CONSTRAINT fk_temporada_conteudo FOREIGN KEY(conteudo_id)
     REFERENCES  Conteudo(id),
     
-    CONSTRAINT uk_temporada_numero UNIQUE (conteudo_id, numero)
+    CONSTRAINT uk_temporada_numero UNIQUE (conteudo_id, numero),
+
+    CONSTRAINT ck_temporada_numero CHECK (numero > 0)
 );
 
 CREATE TABLE Episodio(
@@ -148,7 +152,11 @@ CREATE TABLE Episodio(
     CONSTRAINT fk_episodio_temporada FOREIGN KEY(temporada_id)
     REFERENCES Temporada(id),
     
-    CONSTRAINT uk_episodio_numero UNIQUE (temporada_id, numero)
+    CONSTRAINT uk_episodio_numero UNIQUE (temporada_id, numero),
+
+    CONSTRAINT ck_episodio_duracao CHECK (duracao_minutos > 0),
+
+    CONSTRAINT ck_episodio_numero CHECK (numero > 0)
 );
 
    CREATE TABLE Historico(
@@ -175,7 +183,9 @@ CREATE TABLE Episodio(
         (episodio_id IS NOT NULL AND conteudo_id IS NULL)
         OR
         (episodio_id IS NULL AND conteudo_id IS NOT NULL)
-    )
+    ),
+
+    CONSTRAINT ck_historico_minutos CHECK (minutos_assistidos >= 0)
 );
 
 CREATE TABLE Conteudo_Genero(
@@ -202,3 +212,5 @@ CREATE TABLE Artista_Conteudo(
     CONSTRAINT fk_ac_artista FOREIGN KEY(artista_id)
     REFERENCES Artista(id)
 );
+
+
